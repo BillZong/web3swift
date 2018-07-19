@@ -67,3 +67,9 @@ fastlane/screenshots
 fastlane/test_output
 API_keys.plist
 web3swiftTests/key.json
+
+#CocoaPods
+Pods/
+Podfile.lock
+Example/web3swiftExample/Pods/
+Example/web3swiftExample/Podfile.lock
