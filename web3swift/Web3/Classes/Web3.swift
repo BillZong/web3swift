@@ -29,13 +29,19 @@ public struct Web3 {
         guard let provider = Web3HttpProvider(providerURL) else {return nil}
         return web3(provider: provider)
     }
-    
+
+    public static func InfuraMainnetWeb3(accessToken: String? = nil) -> web3 {
+        let infura = InfuraProvider(Networks.Mainnet, accessToken: accessToken)!
+        return web3(provider: infura)
+    }
+
     public static func InfuraRinkebyWeb3(accessToken: String? = nil) -> web3 {
         let infura = InfuraProvider(Networks.Rinkeby, accessToken: accessToken)!
         return web3(provider: infura)
     }
-    public static func InfuraMainnetWeb3(accessToken: String? = nil) -> web3 {
-        let infura = InfuraProvider(Networks.Mainnet, accessToken: accessToken)!
+
+    public static func InfuraRopstenWeb3(accessToken: String? = nil) -> web3 {
+        let infura = InfuraProvider(Networks.Ropsten, accessToken: accessToken)!
         return web3(provider: infura)
     }
 }
