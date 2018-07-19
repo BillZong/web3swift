@@ -13,18 +13,17 @@ import Foundation
 
 class ViewController: UIViewController {
 
+    fileprivate static let jsonString = "[{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"balance\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"remaining\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"inputs\":[{\"name\":\"_initialAmount\",\"type\":\"uint256\"},{\"name\":\"_tokenName\",\"type\":\"string\"},{\"name\":\"_decimalUnits\",\"type\":\"uint8\"},{\"name\":\"_tokenSymbol\",\"type\":\"string\"}],\"type\":\"constructor\"},{\"payable\":false,\"type\":\"fallback\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_spender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},]"
+
     @IBOutlet weak var imageView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let jsonString = "[{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"balance\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"remaining\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"inputs\":[{\"name\":\"_initialAmount\",\"type\":\"uint256\"},{\"name\":\"_tokenName\",\"type\":\"string\"},{\"name\":\"_decimalUnits\",\"type\":\"uint8\"},{\"name\":\"_tokenSymbol\",\"type\":\"string\"}],\"type\":\"constructor\"},{\"payable\":false,\"type\":\"fallback\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_spender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},]"
 
-        // check testnet account's balance
-
-        let web3Ropsten = Web3.InfuraRopstenWeb3()
-        let address002 = EthereumAddress("0x0552ece35b227a40733fd443d08dfa6215443315")!
-        let balance002Result = web3Ropsten.eth.getBalance(address: address002)
-        guard case .success(let balance002) = balance002Result else {return}
+        // tests
+        assert(self.testRopstenBalance())
+        assert(self.testRopstenBlocTokenBalance())
+        assert(self.testRopstenBlocTokenTransfer())
 
         // create normal keystore
         
@@ -67,7 +66,7 @@ class ViewController: UIViewController {
         let parameters = [] as [AnyObject]
         
         web3Main.addKeystoreManager(keystoreManager)
-        let contract = web3Main.contract(jsonString, at: constractAddress, abiVersion: 2)!
+        let contract = web3Main.contract(ViewController.jsonString, at: constractAddress, abiVersion: 2)!
         let intermediate = contract.method("name", parameters:parameters,  options: options)
         guard let tokenNameRes = intermediate?.call(options: options) else {return}
         guard case .success(let result) = tokenNameRes else {return}
@@ -178,12 +177,54 @@ class ViewController: UIViewController {
         let testMutationResult = web3Rinkeby.contract(testABIonRinkeby, at: deployedTestAddress, abiVersion: 2)?.method("increaseCounter", parameters: testParameters, options: options)?.send(password: "BANKEXFOUNDATION")
         print(testMutationResult)
     }
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+//MARK: - Tests
+extension ViewController {
+    fileprivate func testRopstenBalance() -> Bool {
+        //check testnet account's balance
+        let web3Ropsten = Web3.InfuraRopstenWeb3()
+        let address = EthereumAddress("0x0552ece35b227a40733fd443d08dfa6215443315")!
+        let balanceResult = web3Ropsten.eth.getBalance(address: address)
+        guard case .success(let balance) = balanceResult else {return false}
+        print("balance of \(address.address): \(balance.description)")
+        return true
     }
 
+    fileprivate func testRopstenBlocTokenBalance() -> Bool {
+        //check testnet account's bloc token balance
+        let web3Ropsten = Web3.InfuraRopstenWeb3()
+        let address = EthereumAddress("0x113e67175e36f3201288dbba836baf1a701ed8b2")!
+        let contractAddress = EthereumAddress("0x097544ccc24766aff1bf3a78a219c8e1e304be14")!
+        let contract = web3Ropsten.contract(ViewController.jsonString, at: contractAddress, abiVersion: 2)!
 
+        let gasPriceResult = web3Ropsten.eth.getGasPrice()
+        guard case .success(let gasPrice) = gasPriceResult else {return false}
+
+        var options = Web3Options.defaultOptions()
+        options.gasPrice = gasPrice
+        options.from = EthereumAddress("0x113e67175e36f3201288dbba836baf1a701ed8b2")!
+
+        let symbolMethod = contract.method("symbol", parameters: [], options:options)
+        guard let tokenSymbolRes = symbolMethod?.call(options: options) else { return false }
+        guard case .success(let tokenSymbolResult) = tokenSymbolRes else {return false}
+        print("token symbol: \(tokenSymbolResult["0"] as! String)")
+
+        let nameMethod = contract.method("name", parameters:[],  options: options)
+        guard let tokenNameRes = nameMethod?.call(options: options) else {return false}
+        guard case .success(let tokenNameResult) = tokenNameRes else {return false}
+        print("token name = " + (tokenNameResult["0"] as! String))
+
+        guard let balanceResult = contract.method("balanceOf", parameters: [address] as [AnyObject], options: options)?.call(options: nil) else {return false}
+        guard case .success(let balance) = balanceResult, let bal = balance["0"] as? BigUInt else {return false}
+        print("token balance = " + String(bal))
+
+        return true
+    }
+
+    fileprivate func testRopstenBlocTokenTransfer() -> Bool {
+        //TODO: Not done yet.
+        return true
+    }
 }
 
