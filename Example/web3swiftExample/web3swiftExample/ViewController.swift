@@ -11,6 +11,72 @@ import BigInt
 import web3swift
 import Foundation
 
+
+extension KeystoreManager {
+
+    fileprivate func saveKeyStore(_ key: EthereumKeystoreV3) -> Bool {
+        guard let keyData = try? JSONEncoder().encode(key.keystoreParams),
+            let address = key.getAddress()?.address else {
+            return false
+        }
+        return FileManager.default.createFile(atPath: self.path + "/\(address).json", contents: keyData, attributes: nil)
+    }
+
+    fileprivate func updateKeyStores() {
+        
+    }
+
+//    fileprivate func updateKeys(scanForHDwallets: Bool = false, suffix: String? = nil) throws {
+//        if (scanForHDwallets) {
+//            self.isHDKeystore = true
+//        }
+//        let fileManager = FileManager.default
+//        var isDir : ObjCBool = false
+//        var exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+//        if (!exists && !isDir.boolValue){
+//            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+//            exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+//        }
+//        if (!isDir.boolValue) {
+//            return
+//        }
+//        let allFiles = try fileManager.contentsOfDirectory(atPath: path)
+//        if (suffix != nil) {
+//            for file in allFiles where file.hasSuffix(suffix!) {
+//                var filePath = path
+//                if (!path.hasSuffix("/")){
+//                    filePath = path + "/"
+//                }
+//                filePath = filePath + file
+//                guard let content = fileManager.contents(atPath: filePath) else {continue}
+//                if (!scanForHDwallets) {
+//                    guard let keystore = EthereumKeystoreV3(content) else {continue}
+//                    self._keystores.append(keystore)
+//                } else {
+//                    guard let bipkeystore = BIP32Keystore(content) else {continue}
+//                    self._bip32keystores.append(bipkeystore)
+//                }
+//            }
+//        } else {
+//            for file in allFiles {
+//                var filePath = path
+//                if (!path.hasSuffix("/")){
+//                    filePath = path + "/"
+//                }
+//                filePath = filePath + file
+//                guard let content = fileManager.contents(atPath: filePath) else {continue}
+//                if (!scanForHDwallets) {
+//                    guard let keystore = EthereumKeystoreV3(content) else {continue}
+//                    _keystores.append(keystore)
+//                } else {
+//                    guard let bipkeystore = BIP32Keystore(content) else {continue}
+//                    _bip32keystores.append(bipkeystore)
+//                }
+//            }
+//        }
+//    }
+}
+
 class ViewController: UIViewController {
 
     fileprivate static let jsonString = "[{\"constant\":true,\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"totalSupply\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_from\",\"type\":\"address\"},{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"decimals\",\"outputs\":[{\"name\":\"\",\"type\":\"uint8\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"version\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"name\":\"balance\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"name\":\"\",\"type\":\"string\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_to\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"transfer\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"name\":\"_spender\",\"type\":\"address\"},{\"name\":\"_value\",\"type\":\"uint256\"},{\"name\":\"_extraData\",\"type\":\"bytes\"}],\"name\":\"approveAndCall\",\"outputs\":[{\"name\":\"success\",\"type\":\"bool\"}],\"payable\":false,\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\"},{\"name\":\"_spender\",\"type\":\"address\"}],\"name\":\"allowance\",\"outputs\":[{\"name\":\"remaining\",\"type\":\"uint256\"}],\"payable\":false,\"type\":\"function\"},{\"inputs\":[{\"name\":\"_initialAmount\",\"type\":\"uint256\"},{\"name\":\"_tokenName\",\"type\":\"string\"},{\"name\":\"_decimalUnits\",\"type\":\"uint8\"},{\"name\":\"_tokenSymbol\",\"type\":\"string\"}],\"type\":\"constructor\"},{\"payable\":false,\"type\":\"fallback\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_from\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_to\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"name\":\"_owner\",\"type\":\"address\"},{\"indexed\":true,\"name\":\"_spender\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},]"
@@ -24,19 +90,22 @@ class ViewController: UIViewController {
         
 
         // tests
-        assert(self.testRopstenBalance())
-        assert(self.testRopstenBlocTokenBalance())
-        assert(self.testRopstenBlocTokenTransfer())
+//        assert(self.testRopstenBalance())
+//        assert(self.testRopstenBlocTokenBalance())
+//        assert(self.testRopstenBlocTokenTransfer())
 
         // create normal keystore
         
         let userDir = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
-        let keystoreManager = KeystoreManager.managerForPath(userDir + "/keystore")
+        let keystoreManager = KeystoreManager.managerForPath(userDir + "/12345/keystore")
         var ks: EthereumKeystoreV3?
         if (keystoreManager?.addresses?.count == 0) {
             ks = try! EthereumKeystoreV3(password: "BANKEXFOUNDATION")
-            let keydata = try! JSONEncoder().encode(ks!.keystoreParams)
-            FileManager.default.createFile(atPath: userDir + "/keystore"+"/key.json", contents: keydata, attributes: nil)
+            keystoreManager?.saveKeyStore(ks!)
+//            let keydata = try! JSONEncoder().encode(ks!.keystoreParams)
+//            let ret = FileManager.default.createFile(atPath: userDir + "/12345/keystore"+"/key.json", contents: keydata, attributes: nil)
+//            let ret = FileManager.default.createFile(atPath: userDir + "/12345/keystore"+"/\(ks?.addresses?.toHexString()).json", contents: nil, attributes: nil)
+//            print("ret = \(ret)")
         } else {
             ks = keystoreManager?.walletForAddress((keystoreManager?.addresses![0])!) as! EthereumKeystoreV3
         }
@@ -184,11 +253,18 @@ class ViewController: UIViewController {
 
 //MARK: - Tests
 extension ViewController {
+    fileprivate func testRopstenCreateAccount() -> Bool {
+        //check testnet account's balance
+        let w3 = Web3.InfuraRopstenWeb3()
+//        w3.wallet.getAccounts()
+        return true
+    }
+
     fileprivate func testRopstenBalance() -> Bool {
         //check testnet account's balance
-        let web3Ropsten = Web3.InfuraRopstenWeb3()
+        let w3 = Web3.InfuraRopstenWeb3()
         let address = EthereumAddress("0x0552ece35b227a40733fd443d08dfa6215443315")!
-        let balanceResult = web3Ropsten.eth.getBalance(address: address)
+        let balanceResult = w3.eth.getBalance(address: address)
         guard case .success(let balance) = balanceResult else {return false}
         print("balance of \(address.address): \(balance.description)")
         return true
@@ -196,12 +272,12 @@ extension ViewController {
 
     fileprivate func testRopstenBlocTokenBalance() -> Bool {
         //check testnet account's bloc token balance
-        let web3Ropsten = Web3.InfuraRopstenWeb3()
+        let w3 = Web3.InfuraRopstenWeb3()
         let address = EthereumAddress(ViewController.ropstenTestAccountAddress)!
         let contractAddress = EthereumAddress(ViewController.ropstenTestBlocContractAddress)!
-        let contract = web3Ropsten.contract(ViewController.jsonString, at: contractAddress, abiVersion: 2)!
+        let contract = w3.contract(ViewController.jsonString, at: contractAddress, abiVersion: 2)!
 
-        let gasPriceResult = web3Ropsten.eth.getGasPrice()
+        let gasPriceResult = w3.eth.getGasPrice()
         guard case .success(let gasPrice) = gasPriceResult else {return false}
 
         var options = Web3Options.defaultOptions()
