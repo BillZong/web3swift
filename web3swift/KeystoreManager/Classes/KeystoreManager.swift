@@ -10,7 +10,7 @@ import Foundation
 
 public class KeystoreManager: AbstractKeystore {
     public var isHDKeystore: Bool = false
-    
+
     public var addresses: [EthereumAddress]? {
         get {
             var toReturn = [EthereumAddress]()
@@ -37,12 +37,12 @@ public class KeystoreManager: AbstractKeystore {
             return toReturn
         }
     }
-    
+
     public func UNSAFE_getPrivateKeyData(password: String, account: EthereumAddress) throws -> Data {
         guard let keystore = self.walletForAddress(account) else {throw AbstractKeystoreError.invalidAccountError}
         return try keystore.UNSAFE_getPrivateKeyData(password: password, account: account)
     }
-    
+
     public static var allManagers = [KeystoreManager]()
     public static var defaultManager : KeystoreManager? {
         if KeystoreManager.allManagers.count == 0 {
@@ -50,14 +50,14 @@ public class KeystoreManager: AbstractKeystore {
         }
         return KeystoreManager.allManagers[0]
     }
-    
+
     public static func managerForPath(_ path: String, scanForHDwallets: Bool = false, suffix: String? = nil) -> KeystoreManager? {
         guard let newManager = try? KeystoreManager(path, scanForHDwallets: scanForHDwallets, suffix: suffix), let manager = newManager  else {return nil}
         return manager
     }
-    
+
     public var path: String
-    
+
     public func walletForAddress(_ address: EthereumAddress) -> AbstractKeystore? {
         for keystore in _keystores {
             guard let key = keystore.addresses?.first else {continue}
@@ -81,62 +81,63 @@ public class KeystoreManager: AbstractKeystore {
         }
         return nil
     }
-    
+
     var _keystores:[EthereumKeystoreV3] = [EthereumKeystoreV3]()
     var _bip32keystores: [BIP32Keystore] = [BIP32Keystore]()
     var _plainKeystores: [PlainKeystore] = [PlainKeystore]()
-    
+
     public var keystores:[EthereumKeystoreV3] {
         get {
             return self._keystores
         }
     }
-    
+
     public var bip32keystores:[BIP32Keystore] {
         get {
             return self._bip32keystores
         }
     }
-    
+
     public var plainKeystores:[PlainKeystore] {
         get {
             return self._plainKeystores
         }
     }
-    
+
     public init(_ keystores: [EthereumKeystoreV3]) {
         self.isHDKeystore = false
         self._keystores = keystores
         self.path = ""
     }
-    
+
     public init(_ keystores: [BIP32Keystore]) {
         self.isHDKeystore = true
         self._bip32keystores = keystores
         self.path = "bip32"
     }
-    
+
     public init(_ keystores: [PlainKeystore]) {
         self.isHDKeystore = false
         self._plainKeystores = keystores
         self.path="plain"
     }
-    
+
     private init?(_ path: String, scanForHDwallets: Bool = false, suffix: String? = nil) throws {
-        if (scanForHDwallets) {
-            self.isHDKeystore = true
-        }
         self.path = path
-        let fileManager = FileManager.default
-        var isDir : ObjCBool = false
-        var exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
-        if (!exists && !isDir.boolValue){
-            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-            exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
-        }
-        if (!isDir.boolValue) {
+        self.isHDKeystore = scanForHDwallets
+
+        if (!(try self.createPathDir(path))) {
             return nil
         }
+
+        try self.updateKeyStores(suffix: suffix)
+    }
+
+    public func updateKeyStores(suffix: String? = nil) throws {
+        _keystores.removeAll()
+        _bip32keystores.removeAll()
+
+        let fileManager = FileManager.default
         let allFiles = try fileManager.contentsOfDirectory(atPath: path)
         if (suffix != nil) {
             for file in allFiles where file.hasSuffix(suffix!) {
@@ -145,14 +146,7 @@ public class KeystoreManager: AbstractKeystore {
                     filePath = path + "/"
                 }
                 filePath = filePath + file
-                guard let content = fileManager.contents(atPath: filePath) else {continue}
-                if (!scanForHDwallets) {
-                    guard let keystore = EthereumKeystoreV3(content) else {continue}
-                    _keystores.append(keystore)
-                } else {
-                    guard let bipkeystore = BIP32Keystore(content) else {continue}
-                    _bip32keystores.append(bipkeystore)
-                }
+                self.saveContentAtPath(filePath)
             }
         } else {
             for file in allFiles {
@@ -161,16 +155,33 @@ public class KeystoreManager: AbstractKeystore {
                     filePath = path + "/"
                 }
                 filePath = filePath + file
-                guard let content = fileManager.contents(atPath: filePath) else {continue}
-                if (!scanForHDwallets) {
-                    guard let keystore = EthereumKeystoreV3(content) else {continue}
-                    _keystores.append(keystore)
-                } else {
-                    guard let bipkeystore = BIP32Keystore(content) else {continue}
-                    _bip32keystores.append(bipkeystore)
-                }
+                self.saveContentAtPath(filePath)
             }
         }
-        
+    }
+
+    /// Save the keystore to local keystore array.
+    private func saveContentAtPath(_ filePath: String) {
+        let fileManager = FileManager.default
+        guard let content = fileManager.contents(atPath: filePath) else { return }
+        if (!self.isHDKeystore) {
+            guard let keystore = EthereumKeystoreV3(content) else { return }
+            _keystores.append(keystore)
+        } else {
+            guard let bipkeystore = BIP32Keystore(content) else { return }
+            _bip32keystores.append(bipkeystore)
+        }
+    }
+
+    ///Directory exists
+    private func createPathDir(_ path: String) throws -> Bool  {
+        let fileManager = FileManager.default
+        var isDir: ObjCBool = false
+        var exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+        if (!exists && !isDir.boolValue){
+            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+            exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
+        }
+        return isDir.boolValue
     }
 }
