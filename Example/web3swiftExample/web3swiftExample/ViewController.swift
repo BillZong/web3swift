@@ -19,62 +19,18 @@ extension KeystoreManager {
             let address = key.getAddress()?.address else {
             return false
         }
-        return FileManager.default.createFile(atPath: self.path + "/\(address).json", contents: keyData, attributes: nil)
+        let ret = FileManager.default.createFile(atPath: self.path + "/\(address).json", contents: keyData, attributes: nil)
+        do {
+            try self.updateKeyStores()
+        } catch {
+            return false
+        }
+        return ret
     }
 
-    fileprivate func updateKeyStores() {
-        
+    fileprivate func removeLocalAccount(address: EthereumAddress) -> Bool {
+        return false
     }
-
-//    fileprivate func updateKeys(scanForHDwallets: Bool = false, suffix: String? = nil) throws {
-//        if (scanForHDwallets) {
-//            self.isHDKeystore = true
-//        }
-//        let fileManager = FileManager.default
-//        var isDir : ObjCBool = false
-//        var exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
-//        if (!exists && !isDir.boolValue){
-//            try fileManager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-//            exists = fileManager.fileExists(atPath: path, isDirectory: &isDir)
-//        }
-//        if (!isDir.boolValue) {
-//            return
-//        }
-//        let allFiles = try fileManager.contentsOfDirectory(atPath: path)
-//        if (suffix != nil) {
-//            for file in allFiles where file.hasSuffix(suffix!) {
-//                var filePath = path
-//                if (!path.hasSuffix("/")){
-//                    filePath = path + "/"
-//                }
-//                filePath = filePath + file
-//                guard let content = fileManager.contents(atPath: filePath) else {continue}
-//                if (!scanForHDwallets) {
-//                    guard let keystore = EthereumKeystoreV3(content) else {continue}
-//                    self._keystores.append(keystore)
-//                } else {
-//                    guard let bipkeystore = BIP32Keystore(content) else {continue}
-//                    self._bip32keystores.append(bipkeystore)
-//                }
-//            }
-//        } else {
-//            for file in allFiles {
-//                var filePath = path
-//                if (!path.hasSuffix("/")){
-//                    filePath = path + "/"
-//                }
-//                filePath = filePath + file
-//                guard let content = fileManager.contents(atPath: filePath) else {continue}
-//                if (!scanForHDwallets) {
-//                    guard let keystore = EthereumKeystoreV3(content) else {continue}
-//                    _keystores.append(keystore)
-//                } else {
-//                    guard let bipkeystore = BIP32Keystore(content) else {continue}
-//                    _bip32keystores.append(bipkeystore)
-//                }
-//            }
-//        }
-//    }
 }
 
 class ViewController: UIViewController {
@@ -101,11 +57,7 @@ class ViewController: UIViewController {
         var ks: EthereumKeystoreV3?
         if (keystoreManager?.addresses?.count == 0) {
             ks = try! EthereumKeystoreV3(password: "BANKEXFOUNDATION")
-            keystoreManager?.saveKeyStore(ks!)
-//            let keydata = try! JSONEncoder().encode(ks!.keystoreParams)
-//            let ret = FileManager.default.createFile(atPath: userDir + "/12345/keystore"+"/key.json", contents: keydata, attributes: nil)
-//            let ret = FileManager.default.createFile(atPath: userDir + "/12345/keystore"+"/\(ks?.addresses?.toHexString()).json", contents: nil, attributes: nil)
-//            print("ret = \(ret)")
+            print("ret = \(String(describing: keystoreManager?.saveKeyStore(ks!)))")
         } else {
             ks = keystoreManager?.walletForAddress((keystoreManager?.addresses![0])!) as! EthereumKeystoreV3
         }
